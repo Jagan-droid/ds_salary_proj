@@ -215,4 +215,5 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
 
 #This line will open a new chrome window and start the scraping.
 df = get_jobs('data scientist', 15, False, path, 15)
-df
+
+#df.to_csv("/Users/jagannathan/Documents/ds_salary_proj/datascience_jobs.csv", index = False)
