@@ -26,7 +26,8 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
     driver = webdriver.Chrome(executable_path=path, options=options)
     driver.set_window_size(1120, 1000)
 
-    url = "https://www.glassdoor.co.in/Job/jobs.htm?sc.generalKeyword=%22" +keyword+ "%22&sc.locationSeoString=chennai&locId=2833209&locT=C"
+    url = "https://www.glassdoor.co.in/Job/jobs.htm?sc.generalKeyword=%22"+keyword+"%22&sc.locationSeoString=india&locId=115&locT=N"
+    #Chennai Location link: "https://www.glassdoor.co.in/Job/jobs.htm?sc.generalKeyword=%22" +keyword+ "%22&sc.locationSeoString=chennai&locId=2833209&locT=C"
     driver.get(url)
     jobs = []
 
@@ -214,6 +215,6 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
     return pd.DataFrame(jobs)  #This line converts the dictionary object into a pandas DataFrame.
 
 #This line will open a new chrome window and start the scraping.
-df = get_jobs('data scientist', 15, False, path, 15)
+df = get_jobs('data scientist', 500, False, path, 10)
 
-#df.to_csv("/Users/jagannathan/Documents/ds_salary_proj/datascience_jobs.csv", index = False)
+#df.to_csv("/Users/jagannathan/Documents/ds_salary_proj/dsjobs_india.csv", index = False)
