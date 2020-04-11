@@ -214,5 +214,5 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
     return pd.DataFrame(jobs)  #This line converts the dictionary object into a pandas DataFrame.
 
 #This line will open a new chrome window and start the scraping.
-df = get_jobs('data scientist', 5, False, path, 15)
+df = get_jobs('data scientist', 15, False, path, 15)
 df
