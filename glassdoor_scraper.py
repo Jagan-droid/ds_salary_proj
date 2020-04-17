@@ -42,6 +42,8 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
             driver.find_element_by_class_name("selected").click() 
         except ElementClickInterceptedException:
             pass
+        #except StaleElementReferenceException as e:
+        #    print(e)
 
         time.sleep(.1)
 
@@ -51,6 +53,8 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
         except NoSuchElementException:
             print('x out failed')
             pass
+        except StaleElementReferenceException as e:
+            print(e)
 
         
         #Going through each job in this page
@@ -74,13 +78,35 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
                     collected_successfully = True
                 except:
                     time.sleep(5)
-
+#Going to Salary Tab
             try:
-                salary_estimate = driver.find_element_by_xpath('.//span[@class="gray salary"]').text
-            except NoSuchElementException:
-                salary_estimate = -1 #You need to set a "not found value. It's important."
+                driver.find_element_by_xpath('.//div[@class="tab" and @data-tab-type="salary"]').click()
+    
+                try:
+                        #<div class="infoEntity">
+                        #    <label>Headquarters</label>
+                        #    <span class="value">San Francisco, CA</span>
+                        #</div>
+                    salary_estimate = driver.find_element_by_xpath('.//div[@class="hideHH alignRt avgSalaryCol"]//div[@class="strong"]').text
+                    #//label[text()="Data Scientist"]
+                except NoSuchElementException:
+                    salary_estimate = -1
+                except ElementClickInterceptedException as e:
+                    print(e)      
+                except StaleElementReferenceException as e: 
+                    print(e)
             except ElementClickInterceptedException as e:
                 print(e)
+            except NoSuchElementException:
+                salary_estimate = -1
+            #except StaleElementReferenceException as e:
+            #   print(e)
+            #try:
+            #    salary_estimate = driver.find_element_by_xpath('.//span[@class="gray salary"]').text
+            #except NoSuchElementException:
+            #    salary_estimate = -1 #You need to set a "not found value. It's important."
+            #except ElementClickInterceptedException as e:
+            #    print(e)'''
             
             try:
                 rating = driver.find_element_by_xpath('.//span[@class="rating"]').text
@@ -88,6 +114,8 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
                 rating = -1 #You need to set a "not found value. It's important."
             except ElementClickInterceptedException as e:
                 print(e)            
+            except StaleElementReferenceException as e:
+                print(e)
 
             #Printing for debugging
             if verbose:
@@ -97,6 +125,7 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
                 print("Rating: {}".format(rating))
                 print("Company Name: {}".format(company_name))
                 print("Location: {}".format(location))
+           
 
             #Going to the Company tab...
             #clicking on this:
@@ -114,12 +143,16 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
                     headquarters = -1
                 except ElementClickInterceptedException as e:
                     print(e)    
+                except StaleElementReferenceException as e:
+                    print(e)
                     
                 try:
                     size = driver.find_element_by_xpath('.//div[@class="infoEntity"]//label[text()="Size"]//following-sibling::*').text
                 except NoSuchElementException:
                     size = -1
                 except ElementClickInterceptedException as e:
+                    print(e)
+                except StaleElementReferenceException as e:
                     print(e)
 
 
@@ -129,6 +162,8 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
                     founded = -1
                 except ElementClickInterceptedException as e:
                     print(e)
+                except StaleElementReferenceException as e:
+                    print(e)
 
                 try:
                     type_of_ownership = driver.find_element_by_xpath('.//div[@class="infoEntity"]//label[text()="Type"]//following-sibling::*').text
@@ -136,34 +171,45 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
                     type_of_ownership = -1
                 except ElementClickInterceptedException as e:
                     print(e)
-
+                except StaleElementReferenceException as e:
+                    print(e)
+                    
                 try:
                     industry = driver.find_element_by_xpath('.//div[@class="infoEntity"]//label[text()="Industry"]//following-sibling::*').text
                 except NoSuchElementException:
                     industry = -1
                 except ElementClickInterceptedException as e:
                     print(e)
-
+                except StaleElementReferenceException as e:
+                    print(e)
+                    
                 try:
                     sector = driver.find_element_by_xpath('.//div[@class="infoEntity"]//label[text()="Sector"]//following-sibling::*').text
                 except NoSuchElementException:
                     sector = -1
                 except ElementClickInterceptedException as e:
                     print(e)
-
+                except StaleElementReferenceException as e:
+                    print(e)
+                    
                 try:
                     revenue = driver.find_element_by_xpath('.//div[@class="infoEntity"]//label[text()="Revenue"]//following-sibling::*').text
                 except NoSuchElementException:
                     revenue = -1
                 except ElementClickInterceptedException as e:
                     print(e)
-
+                except StaleElementReferenceException as e:
+                    print(e)
+                    
                 try:
                     competitors = driver.find_element_by_xpath('.//div[@class="infoEntity"]//label[text()="Competitors"]//following-sibling::*').text
                 except NoSuchElementException:
                     competitors = -1
                 except ElementClickInterceptedException as e:
                     print(e)
+                except StaleElementReferenceException as e:
+                    print(e)                    
+               
 
             except NoSuchElementException:  #Rarely, some job postings do not have the "Company" tab.
                 headquarters = -1
@@ -211,10 +257,12 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
             break
         except ElementClickInterceptedException as e:
             print(e)
+        except StaleElementReferenceException as e:
+            print(e)
                     
     return pd.DataFrame(jobs)  #This line converts the dictionary object into a pandas DataFrame.
 
 #This line will open a new chrome window and start the scraping.
-df = get_jobs('data scientist', 500, False, path, 10)
+df = get_jobs('data scientist', 500, False, path, 15)
 
-#df.to_csv("/Users/jagannathan/Documents/ds_salary_proj/dsjobs_india.csv", index = False)
+#df.to_csv("/Users/jagannathan/Documents/ds_salary_proj/dsjobs_version3.csv", index = False)
