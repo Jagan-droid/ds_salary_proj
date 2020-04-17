@@ -7,12 +7,27 @@ Created on Sat Apr 11 18:44:47 2020
 """
 import pandas as pd
 
-df = pd.read_csv("/Users/jagannathan/Documents/ds_salary_proj/dsjobs_india.csv")
+df = pd.read_csv("/Users/jagannathan/Documents/ds_salary_proj/dsjobs_version3.csv")
 #New line of code to correct a specific float attribute error in Job Description {AttributeError: 'float' object has no attribute 'lower'}
 df['Job Description'] = df['Job Description'].astype(str) 
 
 #Salary Parsing -- Unable to extract salary yet as salary estimate section has been removed from glassdoor jobs summary view
+#df['hourly'] = df['Salary Estimate'].apply(lambda x: 1 if 'per hour' in x.lower() else 0)
+df['monthly'] = df['Salary Estimate'].apply(lambda x: 1 if '/mo' in x.lower() or 'per month' in x.lower() else 0)
+#df['employer_provided'] = df['Salary Estimate'].apply(lambda x: 1 if 'employer provided salary:' in x.lower() else 0)
 
+df = df[df['Salary Estimate'] != '-1'] #removes all rows with '-1' as Salary
+salary = df['Salary Estimate'].apply(lambda x: x.split('(')[0])
+minus_Kd = salary.apply(lambda x: x.replace('K','').replace('₹',''))
+
+#Removing '/mo' and commas from the dataframe
+min_monthly = minus_Kd.apply(lambda x: x.lower().replace('/mo','').replace(',',''))
+#df.info()
+#df['min_monthly'] = df['min_monthly'].astype(str)
+
+df['min_salary'] = min_monthly.apply(lambda x: int(x.split('-')[0])) #Printing the first element
+df['max_salary'] = min_monthly.apply(lambda x: int(x.split('-')[-1])) #Printing the last element
+df['avg_salary'] = (df.min_salary+df.max_salary)/2 #Taking the average of the two salary limits
 
 #Company Name Text Only
 df['company_txt'] = df.apply(lambda x: x['Company Name'] if x['Rating']<0 else x['Company Name'][:-3], axis = 1) 
@@ -55,14 +70,14 @@ df.aws_yn.value_counts()
 df['excel_yn'] = df['Job Description'].apply(lambda x: 1 if 'excel' in x.lower() else 0)
 df.excel_yn.value_counts()
 
-df.columns
+#df.columns
 
 #Removing unnecessary columns from Ken Jee's video(Unnamed: 0)/ The column is already not present here. So, I have deleted an erroneous column 'job_state'
 #df_out = df.drop(['job_state'], axis=1)
 #df_out.columns
 
 #Saving the Cleaned data frame as csv file
-df.to_csv("/Users/jagannathan/Documents/ds_salary_proj/dsjobs_india_cleaned.csv", index=False)
+#df.to_csv("/Users/jagannathan/Documents/ds_salary_proj/dsjobs_version3_cleaned.csv", index=False)
 
 #Validating the saved file
-pd.read_csv("/Users/jagannathan/Documents/ds_salary_proj/dsjobs_india_cleaned.csv")
+#pd.read_csv("/Users/jagannathan/Documents/ds_salary_proj/dsjobs_version3_cleaned.csv")
