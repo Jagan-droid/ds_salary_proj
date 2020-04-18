@@ -64,7 +64,7 @@ for i in range(1,100):
 plt.plot(alpha,error)
 
 err = tuple(zip(alpha,error))
-df_err = pd.DataFrame(err, columns = ['alpha','error']) 
+df_err = pd.DataFrame(err, columns = ['alpha','error'])
 df_err[df_err.error == max(df_err.error)]
 
 
